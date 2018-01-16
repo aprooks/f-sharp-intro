@@ -6,18 +6,19 @@
 
 ***
 
-## F# |> LV
+## F# intro
 
 <br />
 <br />
 
 <br />
-Alexander Prooks - [@aprooks](http://www.twitter.com/aprooks)
+Alexander Prooks - [@aprooks](aprooks@live.ru)
 
 ***
 
-### OOP vs Functinal
+### OOP vs Functional
 
+---
 
 ``` C#
 
@@ -34,25 +35,18 @@ public class Calculator
 ```
 ---
 
-linear function
-
-    F(x) = x + 1 
-
-F#
+linear function F(x) = x + 1 
 
     let f x = x + 1
 
 
-two arguments
-
-    F(x,y) = x + 2*y 
-
-F#
+two arguments F(x,y) = x + 2*y 
 
     let f x y = x + 2*y
 
 ---
 
+    //two args
     let add x y = x + y
 
     let result = add 2 5
@@ -167,12 +161,19 @@ F#
     //example
 
     let input = {
-        Operator: Add
-        Left: 10
-        Right: 20
+        Operator = Add
+        Left = 10.
+        Right = 20.
     }
 
-    let result = calculate input
+    let res1 = calculate input
+
+    let res2 = calculate {
+        Operator = Add
+        Left = res1
+        Right = 20.
+    }
+
 
 ---
 
@@ -181,7 +182,7 @@ F#
     type State = {
         Amount: double
     }
-    with static member Zero() = {
+    with static member Zero = {
             Amount = 0.
         }
 
@@ -194,11 +195,11 @@ F#
     let calc state op =
         match op with
         | Add a -> { Amount = state.Amount + a}
-        //..V
+        //..
 ---
 ### full 
 
-    let res1 = calc (State.Zero()) (Add 10.) 
+    let res1 = calc State.Zero (Add 10.) 
     // db.Save res1
 
     //let res1 = db.Load
@@ -214,11 +215,18 @@ F#
         Multiply 2.
     ]
 
+---
     let resFull zero = 
         (calc 
-            (calc (calc zero (Add 10.))
-                (Substract 20.))
-                    (Add 50.))
+            (calc 
+                (calc zero (Add 10.))
+                    (Substract 20.))
+                        (Add 50.))
+
+    let resultManual = resFull State.Zero
+    
+---
+
 
     let folded zero ops = 
         Seq.fold (fun acc el -> calc acc el) zero ops
@@ -310,8 +318,6 @@ F#
 ---
 
 ## DI F# way
-
-
     module Persistence = 
 
         let saveToDb connString (id,obj) = 
